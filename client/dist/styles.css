@@ -86,3 +86,16 @@ img{
 blockquote{
     margin: 60px 20px  20px  100px;
 }
+#post{
+    margin: 20px;
+    /* display: grid;
+    grid-template-columns:  30%;
+
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 10px; */
+}
+textarea{
+    /* margin: 20px; */
+    width: 300px;
+    height: 150px;
+}

@@ -6,6 +6,11 @@ class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            posts:[
+                {url:'pics/russianSpoons/rSpoon1.jpg', post:'firstPost'},
+                {url:'pics/russianSpoons/rSpoon2.jpg', post:'second post'},
+                {url:'pics/russianSpoons/rSpoon3.jpg', post:'third post'}
+            ],
             component : 'home',
             russianSpoons : [
                 'pics/russianSpoons/rSpoon1.jpg',
@@ -20,11 +25,18 @@ class App extends React.Component {
                 
             ]
         }
+        this.handleSubmitPost = this.handleSubmitPost.bind(this);
         this.handleBreadCrumbClick = this.handleBreadCrumbClick.bind(this);
+    };
+    handleSubmitPost(event){
+        event.preventDefault();
+        console.log('submitForm');
     }
+
     handleBreadCrumbClick(event){
         event.preventDefault();
-        console.log(event.target.name)
+        console.log(event.target.name);
+        
         this.setState({
             component: `${event.target.name}`
         })
@@ -76,7 +88,8 @@ class App extends React.Component {
                 return(
                     <div>
                         < BreadCrumb click ={this.handleBreadCrumbClick} />
-                        < Portal pics={this.state.images}/>
+                        < SubmitForm submitForm={this.handleSubmitPost}/>
+                        < Portal allPosts={this.state.posts}/>
                     </div>
                 )
             }
@@ -183,14 +196,60 @@ function RussianSpoons(props) {
     )
 }
 function Portal(props){
+    console.log(props.allPosts)
     return(
         <div>
-            portal
+            <table>
+                <tbody>
+                        {
+                            props.allPosts.map((item, index) => {
+                               return ( <tr>
+                                    <td>
+                                        <img src={item.url}></img>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            {item.post}
+                                        </p>
+                                    </td>
+                                </tr>)
+                            })
+                        }
+                </tbody>
+            </table>
+
         </div>
     )
 }
+function SubmitForm(props){
+    console.log(props)
+    return(
+        <div>
+            <form id='post'>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type='file' id='submitFile' name='formSubmit' accept='image/png, image/jpeg'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea id='textArea' placeholder='Add a spoon history...'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type='submit'>Submit Post</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </form>
+        </div>
+    )
+}
+
 ReactDOM.render(<App />, document.getElementById('app'))
-// ReactDOM.render(<App />, document.getElementById("app"));
-            {/* <Zoom {...zoomOutProperties}>
-              {this.state.images.map((each, index) => <img key={index} style={{width: "100%"}} src={each} />) }
-            </Zoom> */}
