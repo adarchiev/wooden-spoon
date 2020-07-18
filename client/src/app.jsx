@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM, { render } from 'react-dom'
-import { Zoom } from 'react-slideshow-image';
+import ReactDOM from 'react-dom'
 
 class App extends React.Component {
     constructor(props){
@@ -30,13 +29,53 @@ class App extends React.Component {
     };
     handleSubmitPost(event){
         event.preventDefault();
-        console.log('submitForm');
+        const file = document.getElementById('submitFile');
+        let formData = new FormData();
+        formData.append('file', file.files[0]);
+        formData.append('text',  document.getElementById('textArea').value);
+        
+        fetch("http://localhost:3333/", {
+            method:'POST',
+            body: formData,
+            contentType: false,
+            processData: false
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(res => {
+            console.log('--------------------------');
+            let postsFromDB = res.data.map((record) => ({url : record.url, post : record.post}))        
+            this.setState({
+                posts: postsFromDB
+            })
+        })
+        .catch(err => console.log(err));
     }
 
     handleBreadCrumbClick(event){
-        event.preventDefault();
         console.log(event.target.name);
-        
+        if(event.target.name === 'portal'){
+            
+            fetch("http://localhost:3333/", {
+                method:'POST',
+                headers: {'Content-Type':'application/json'},
+                contentType: false,
+                processData: false
+            })
+            .then(result => result.json())
+            .then(res => {
+                let postsFromDB = res.data.map((record) => ({url : record.url, post : record.post}))        
+                this.setState({
+                    posts: postsFromDB
+                });
+            })
+            .catch(err => {
+                console.log(err)
+            });
+        }
+        event.preventDefault();
+
         this.setState({
             component: `${event.target.name}`
         })
@@ -203,21 +242,21 @@ function Portal(props){
                 <tbody>
                         {
                             props.allPosts.map((item, index) => {
-                               return ( <tr>
-                                    <td>
-                                        <img src={item.url}></img>
-                                    </td>
-                                    <td>
-                                        <p>
-                                            {item.post}
-                                        </p>
-                                    </td>
-                                </tr>)
+                               return ( 
+                                    <tr>
+                                        <td>
+                                            <img src={item.url}></img>
+                                        </td>
+                                        <td>
+                                            <p>
+                                                {item.post}
+                                            </p>
+                                        </td>
+                                    </tr>)
                             })
                         }
                 </tbody>
             </table>
-
         </div>
     )
 }
@@ -240,7 +279,7 @@ function SubmitForm(props){
                         </tr>
                         <tr>
                             <td>
-                                <button type='submit'>Submit Post</button>
+                                <button onClick={props.submitForm} type='submit'>Submit Post</button>
                             </td>
                         </tr>
                     </tbody>

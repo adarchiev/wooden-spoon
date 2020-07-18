@@ -1,6 +1,7 @@
 body{
-    background-image: url('../pics/mainSpoon.jpg');
+    /* background-image: url('../pics/mainSpoon.jpg'); */
     object-fit:cover;
+    background-color: #bada55;
 }
 h1{
     font-family: "Comic Sans MS", cursive, sans-serif;
